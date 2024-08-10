@@ -1,7 +1,6 @@
 const { OpenAI } = require("@langchain/openai");
 const { PDFLoader } = require("@langchain/community/document_loaders/fs/pdf");
 const { PromptTemplate } = require("@langchain/core/prompts");
-const StructuredOutputParser = require("langchain/output_parsers");
 const fs = require('fs').promises;
 
 const extractInvoiceDetails = async (filePath) => {
@@ -14,14 +13,7 @@ const extractInvoiceDetails = async (filePath) => {
     // Combine content from all pages
     const fullContent = docs.map(doc => doc.pageContent).join('\n');
 
-    // Define the output parser
-    const parser = StructuredOutputParser.fromNamesAndDescriptions({
-      customerDetails: "Details of the customer",
-      products: "List of products in the invoice",
-      totalAmount: "The total amount of the invoice"
-    });
 
-    const formatInstructions = parser.getFormatInstructions();
 
     const template = `
     Extract the following information from the invoice:
@@ -29,23 +21,34 @@ const extractInvoiceDetails = async (filePath) => {
     2. Products
     3. Total Amount
 
+   
     Invoice content:
     {invoiceContent}
 
-    {format_instructions}
+     There may be more than one invoice in a invoice content in that case make an array and store invoices in form object
+     Provide the extracted information in JSON format.
     `;
 
-    const prompt = PromptTemplate.fromTemplate(template);
-    const chain = prompt.pipe(llm).pipe(parser);
-    const result = chain.invoke({
+    const prompt = new PromptTemplate({
+        template: template,
+        inputVariables: ["invoiceContent"],
+      });
+    
+      const chainedPrompt = await prompt.format({
         invoiceContent: fullContent,
-        format_instructions: formatInstructions
-    })
+      });
+    
+      const result = await llm.call(chainedPrompt);
+      console.log(result)
+
+      await fs.unlink(filePath);
+
+      return JSON.parse(result);
 
     
 
     // Delete the file after processing
-    await fs.unlink(filePath);
+
 
     return result;
   } catch (error) {
