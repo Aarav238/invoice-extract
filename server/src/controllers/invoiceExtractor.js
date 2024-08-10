@@ -27,6 +27,10 @@ const extractInvoiceDetails = async (filePath) => {
 
      There may be more than one invoice in a invoice content in that case make an array and store invoices in form object
      Provide the extracted information in JSON format.
+     The json object should contain these keys only:
+     customer_details: details of the customer 
+     products: all the products
+     total_amount: total amount in the invoice
     `;
 
     const prompt = new PromptTemplate({
