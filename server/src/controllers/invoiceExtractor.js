@@ -28,7 +28,7 @@ const extractInvoiceDetails = async (filePath) => {
      There may be more than one invoice in a invoice content in that case make an array and store invoices in form object
      Provide the extracted information in JSON format.
      The json object should contain these keys only:
-     customer_details: details of the customer i.e name and mobile(should be customer mobile number)
+     customer_details: details of the customer i.e name and mobile(should be customer mobile number not any toll free number or organisation number)
      products: array of all the products contain product object should contain three keys i.e item , price , quantity.
      total_amount: total amount in the invoice
     `;
@@ -37,6 +37,7 @@ const extractInvoiceDetails = async (filePath) => {
         template: template,
         inputVariables: ["invoiceContent"],
       });
+      console.log(fullContent)
     
       const chainedPrompt = await prompt.format({
         invoiceContent: fullContent,
