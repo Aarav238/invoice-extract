@@ -29,7 +29,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onExtractComplete }) => {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await axios.post<any>('http://localhost:5000/api/invoice/extract', formData, {
+      const response = await axios.post<any>('https://invoice-extract.onrender.com/api/invoice/extract', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
