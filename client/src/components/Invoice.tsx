@@ -51,7 +51,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ details }) => {
                       <span className="ml-2 flex-1 w-0 truncate">{product.item}</span>
                     </div>
                     <div className="ml-4 flex-shrink-0">
-                      <span className="font-medium">{product.net_amount}</span>
+                      <span className="font-medium">{product.price}</span>
                     </div>
                   </li>
                 ))}
